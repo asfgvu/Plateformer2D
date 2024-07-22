@@ -44,9 +44,18 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private GameObject Bullet;
     [SerializeField] private Transform firePoint;
 
+    [SerializeField] private LayerMask grapLayer;
+    [SerializeField] private Camera mainCamera;
+    [SerializeField] private LineRenderer lineRenderer;
+    [SerializeField] private DistanceJoint2D distanceJoint;
+    [SerializeField] private float grappleDetectionDistance;
+    private Collider2D grappleTouched;
+
     private void Start()
     {
         currentWallClimbDuration = wallClimbDuration;
+
+        distanceJoint.enabled = false;
     }
 
     // Update is called once per frame
@@ -103,6 +112,36 @@ public class PlayerMovement : MonoBehaviour
         if (Input.GetButtonDown("Fire1"))
         {
             Fire();
+        }
+
+        Collider[] hitCollider = Physics.OverlapSphere(gameObject.transform.position, grappleDetectionDistance);
+
+        if (hitCollider != null)
+        {
+            for (int i = 0; i < hitCollider.Length; i++)
+            {
+                print(hitCollider[i]);
+            }
+
+            if (Input.GetKeyDown(KeyCode.Mouse1))
+            {
+                Vector2 grapplePos = (Vector2)hitCollider[0].gameObject.transform.position;
+                lineRenderer.SetPosition(0, grapplePos);
+                lineRenderer.SetPosition(1, transform.position);
+                distanceJoint.connectedAnchor = grapplePos;
+                distanceJoint.enabled = true;
+                lineRenderer.enabled = true;
+            }
+            else if (Input.GetKeyUp(KeyCode.Mouse1))
+            {
+                distanceJoint.enabled = false;
+                lineRenderer.enabled = false;
+            }
+
+            if (distanceJoint.enabled)
+            {
+                lineRenderer.SetPosition(1, transform.position);
+            }
         }
     }
 
