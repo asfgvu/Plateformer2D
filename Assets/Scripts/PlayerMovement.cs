@@ -7,6 +7,7 @@ public class PlayerMovement : MonoBehaviour
 {
     private float horizontal;
     private float speed = 8f;
+    private float grapplingSpeed = .1f;
     private float jumpingPower = 16f;
     private bool isFacingRight = true;
 
@@ -50,6 +51,8 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private DistanceJoint2D distanceJoint;
     [SerializeField] private float grappleDetectionDistance;
     private Collider2D grappleTouched;
+    private bool isGrappling = false;
+    private bool canAddInputGrappling;
 
     private void Start()
     {
@@ -90,7 +93,7 @@ public class PlayerMovement : MonoBehaviour
             rb.velocity = new Vector2(rb.velocity.x, rb.velocity.y * 0.5f);
         }
 
-        if (dash && canDash)
+        if (dash && canDash && !isGrappling)
         {
             StartCoroutine(Dash());
         }
@@ -98,6 +101,7 @@ public class PlayerMovement : MonoBehaviour
         WallSlide();
         WallJump();
         WallClimb();
+        Grappling();
 
         if (!isWallJumping)
         {
@@ -113,36 +117,6 @@ public class PlayerMovement : MonoBehaviour
         {
             Fire();
         }
-
-        Collider[] hitCollider = Physics.OverlapSphere(gameObject.transform.position, grappleDetectionDistance);
-
-        if (hitCollider != null)
-        {
-            for (int i = 0; i < hitCollider.Length; i++)
-            {
-                print(hitCollider[i]);
-            }
-
-            if (Input.GetKeyDown(KeyCode.Mouse1))
-            {
-                Vector2 grapplePos = (Vector2)hitCollider[0].gameObject.transform.position;
-                lineRenderer.SetPosition(0, grapplePos);
-                lineRenderer.SetPosition(1, transform.position);
-                distanceJoint.connectedAnchor = grapplePos;
-                distanceJoint.enabled = true;
-                lineRenderer.enabled = true;
-            }
-            else if (Input.GetKeyUp(KeyCode.Mouse1))
-            {
-                distanceJoint.enabled = false;
-                lineRenderer.enabled = false;
-            }
-
-            if (distanceJoint.enabled)
-            {
-                lineRenderer.SetPosition(1, transform.position);
-            }
-        }
     }
 
     private void FixedUpdate()
@@ -152,9 +126,15 @@ public class PlayerMovement : MonoBehaviour
             return;
         }
 
-        if (!isWallJumping)
+        if (!isWallJumping && !isGrappling)
         {
             rb.velocity = new Vector2(horizontal * speed, rb.velocity.y);
+        }
+
+        if (isGrappling && canAddInputGrappling)
+        {
+            print("Input Add");
+            rb.velocity = new Vector2(rb.velocity.x + horizontal * grapplingSpeed, rb.velocity.y);
         }
     }
 
@@ -175,6 +155,76 @@ public class PlayerMovement : MonoBehaviour
             }
         }
         return Physics2D.OverlapCircle(wallCheck.position, 0.2f, wallLayer);
+    }
+
+    private void Grappling() 
+    {
+        Collider[] hitCollider = Physics.OverlapSphere(gameObject.transform.position, grappleDetectionDistance, grapLayer);
+
+        if (hitCollider != null)
+        {
+            int ColliderArrayNumber = 0;
+            float lowerDistance = 100;
+            float currentDistance;
+
+            if (hitCollider.Length > 1)
+            {
+                for (int i = 0; i < hitCollider.Length; i++)
+                {
+
+                    print(hitCollider[i]);
+                    currentDistance = Vector3.Distance(transform.position, hitCollider[i].gameObject.transform.position);
+
+                    if (i == 0)
+                    {
+                        lowerDistance = currentDistance;
+                    }
+                    else
+                    {
+                        if (currentDistance < lowerDistance)
+                        {
+                            lowerDistance = currentDistance;
+                            ColliderArrayNumber = i;
+                        }
+                    }
+                }
+            }
+            if (Input.GetKeyDown(KeyCode.Mouse1))
+            {
+                Vector2 grapplePos = (Vector2)hitCollider[ColliderArrayNumber].gameObject.transform.position;
+                lineRenderer.SetPosition(0, grapplePos);
+                lineRenderer.SetPosition(1, transform.position);
+                distanceJoint.connectedAnchor = grapplePos;
+                distanceJoint.enabled = true;
+                lineRenderer.enabled = true;
+                isGrappling = true;
+                //canDash = true;
+                //doubleJump = true;
+                rb.gravityScale = 4f;
+
+                if (rb.velocity.x >= 10 && rb.velocity.y >= 10)
+                {
+                    canAddInputGrappling = false;
+                }
+                else
+                {
+                    canAddInputGrappling = true;
+                }
+            }
+            else if (Input.GetKeyUp(KeyCode.Mouse1))
+            {
+                distanceJoint.enabled = false;
+                lineRenderer.enabled = false;
+                isGrappling = false;
+                rb.gravityScale = 4f;
+                canAddInputGrappling = true;
+            }
+
+            if (distanceJoint.enabled)
+            {
+                lineRenderer.SetPosition(1, transform.position);
+            }
+        }
     }
 
     private void WallSlide()
