@@ -8,6 +8,7 @@ public class BulletMovement : MonoBehaviour
 {
     [SerializeField] private float speed = 5;
     private float direction;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -46,7 +47,6 @@ public class BulletMovement : MonoBehaviour
     {
         if (collision != null)
         {
-            print("Toucher");
             gameObject.SetActive(false);
         }
     }

@@ -10,6 +10,9 @@ public class ObjectPool : MonoBehaviour
     private List<GameObject> pooledObjects = new List<GameObject>();
     private int amountToPool = 20;
 
+    private float fireRate;
+    private float bulletFireRate = 0.25f;
+
     [SerializeField] private GameObject bulletPrefab;
 
     private void Awake()
@@ -25,10 +28,12 @@ public class ObjectPool : MonoBehaviour
     {
         for (int i = 0; i < amountToPool; i++)
         {
-            GameObject obj = Instantiate(bulletPrefab);
+            GameObject obj = Instantiate(bulletPrefab, this.transform);
             obj.SetActive(false);
             pooledObjects.Add(obj);
         }
+
+        fireRate = bulletFireRate;
     }
 
     public GameObject GetPooledObject()
@@ -43,4 +48,11 @@ public class ObjectPool : MonoBehaviour
 
         return null;
     }
+
+    public float GetFireRate()
+    {
+        return fireRate;
+    }
+
+
 }

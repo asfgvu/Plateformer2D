@@ -59,6 +59,7 @@ public class PlayerMovement : MonoBehaviour
     private bool isGrappling = false;
     private bool canAddInputGrappling;
     private Collider grappleFocus;
+    private bool canShoot = true;
 
     private void Start()
     {
@@ -119,9 +120,13 @@ public class PlayerMovement : MonoBehaviour
             currentWallClimbDuration = wallClimbDuration;
         }
 
-        if (Input.GetButtonDown("Fire1"))
+        if (Input.GetButton("Fire1"))
         {
-            Fire();
+            if (canShoot)
+            {
+                StartCoroutine(Fire());
+            }
+            
         }
     }
 
@@ -132,16 +137,11 @@ public class PlayerMovement : MonoBehaviour
             return;
         }
 
-        if (!isWallJumping && !isGrappling)
-        {
-            
-        }
-
         if (isOnPlateform)
         {
             rb.velocity = new Vector2(horizontal * speed + plateformRb.velocity.x, rb.velocity.y);
         }
-        else
+        else if (!isGrappling)
         {
             rb.velocity = new Vector2(horizontal * speed, rb.velocity.y);
         }
@@ -349,9 +349,11 @@ public class PlayerMovement : MonoBehaviour
         canDash = true;
     }
 
-    private void Fire()
+    private IEnumerator Fire()
     {
         GameObject bullet = ObjectPool.instance.GetPooledObject();
+
+        canShoot = false;
 
         if (bullet != null)
         {
@@ -359,5 +361,16 @@ public class PlayerMovement : MonoBehaviour
             bullet.GetComponent<BulletMovement>().SetDirection(Mathf.Sign(transform.localScale.x));
             bullet.SetActive(true);
         }
+
+        StartCoroutine(FireRateHandler());
+
+        yield return null;
+    }
+
+    private IEnumerator FireRateHandler()
+    {
+        float fireRate = ObjectPool.instance.GetFireRate();
+        yield return new WaitForSeconds(fireRate);
+        canShoot = true;
     }
 }
