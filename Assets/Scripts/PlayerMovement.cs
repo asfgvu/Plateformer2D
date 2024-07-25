@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
@@ -50,9 +51,12 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private LineRenderer lineRenderer;
     [SerializeField] private DistanceJoint2D distanceJoint;
     [SerializeField] private float grappleDetectionDistance;
+    [SerializeField] private Color grappleFocusColor;
+    [SerializeField] private Color defaultGrappleColor;
     private Collider2D grappleTouched;
     private bool isGrappling = false;
     private bool canAddInputGrappling;
+    private Collider grappleFocus;
 
     private void Start()
     {
@@ -133,7 +137,6 @@ public class PlayerMovement : MonoBehaviour
 
         if (isGrappling && canAddInputGrappling)
         {
-            print("Input Add");
             rb.velocity = new Vector2(rb.velocity.x + horizontal * grapplingSpeed, rb.velocity.y);
         }
     }
@@ -161,34 +164,43 @@ public class PlayerMovement : MonoBehaviour
     {
         Collider[] hitCollider = Physics.OverlapSphere(gameObject.transform.position, grappleDetectionDistance, grapLayer);
 
-        if (hitCollider != null)
+        //print(hitCollider.Length);
+
+        if (hitCollider.Length > 0)
         {
             int ColliderArrayNumber = 0;
             float lowerDistance = 100;
             float currentDistance;
 
+            grappleFocus = hitCollider[0];
+
             if (hitCollider.Length > 1)
             {
                 for (int i = 0; i < hitCollider.Length; i++)
                 {
-
-                    print(hitCollider[i]);
                     currentDistance = Vector3.Distance(transform.position, hitCollider[i].gameObject.transform.position);
 
-                    if (i == 0)
+                    if (currentDistance < lowerDistance)
                     {
                         lowerDistance = currentDistance;
-                    }
-                    else
-                    {
-                        if (currentDistance < lowerDistance)
-                        {
-                            lowerDistance = currentDistance;
-                            ColliderArrayNumber = i;
-                        }
+                        ColliderArrayNumber = i;
+                        grappleFocus = hitCollider[i];
                     }
                 }
             }
+
+            for (int i = 0; i < hitCollider.Length; i++)
+            {
+                if (grappleFocus == hitCollider[i])
+                {
+                    hitCollider[i].gameObject.GetComponent<SpriteRenderer>().color = Color.red;
+                }
+                else
+                {
+                    hitCollider[i].gameObject.GetComponent<SpriteRenderer>().color = Color.green;
+                }
+            }
+
             if (Input.GetKeyDown(KeyCode.Mouse1))
             {
                 Vector2 grapplePos = (Vector2)hitCollider[ColliderArrayNumber].gameObject.transform.position;
@@ -224,6 +236,10 @@ public class PlayerMovement : MonoBehaviour
             {
                 lineRenderer.SetPosition(1, transform.position);
             }
+        }
+        else
+        {
+            grappleFocus.gameObject.GetComponent<SpriteRenderer>().color = Color.green;
         }
     }
 
