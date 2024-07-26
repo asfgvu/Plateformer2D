@@ -44,7 +44,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private Transform wallCheck;
     [SerializeField] private LayerMask wallLayer;
     [SerializeField] private GameObject Bullet;
-    [SerializeField] private Transform firePoint;
+    public Transform firePoint;
 
     [SerializeField] private LayerMask grapLayer;
     [SerializeField] private Camera mainCamera;
@@ -154,21 +154,21 @@ public class PlayerMovement : MonoBehaviour
 
     private bool IsGrounded()
     {
-        return Physics2D.OverlapCircle(groundCheck.position, 0.2f, groundLayer);
+        return Physics2D.OverlapCircle(groundCheck.position, 0.4f, groundLayer);
     }
 
     private bool isWalled()
     {
-        var collidersInRangeGround = Physics2D.OverlapCircle(wallCheck.position, 0.2f, groundLayer);
+        var collidersInRangeGround = Physics2D.OverlapCircle(wallCheck.position, 0.4f, groundLayer);
 
         if (collidersInRangeGround != null)
         {
             if (collidersInRangeGround.gameObject.tag == "Wall")
             {
-                return Physics2D.OverlapCircle(wallCheck.position, 0.2f, groundLayer);
+                return collidersInRangeGround;
             }
         }
-        return Physics2D.OverlapCircle(wallCheck.position, 0.2f, wallLayer);
+        return Physics2D.OverlapCircle(wallCheck.position, 0.4f, wallLayer);
     }
 
     private void Grappling() 

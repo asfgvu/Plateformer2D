@@ -7,7 +7,11 @@ using UnityEngine;
 public class BulletMovement : MonoBehaviour
 {
     [SerializeField] private float speed = 5;
+    [SerializeField] private float rocketSpeed = 2f;
     private float direction;
+
+    [SerializeField] private bool isRocket;
+    [SerializeField] private bool isOscilation;
 
     // Start is called before the first frame update
     void Start()
@@ -18,9 +22,33 @@ public class BulletMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
+        float movementSpeed;
+
         StartCoroutine(DestroyBullet());
-        float movementSpeed = speed * Time.deltaTime * direction;
-        transform.Translate(movementSpeed, 0, 0);
+        if (isRocket)
+        {
+            movementSpeed = rocketSpeed * Time.deltaTime * direction;
+        }
+        else
+        {
+            movementSpeed = speed * Time.deltaTime * direction;
+        }
+        
+        if (isOscilation)
+        {
+            Vector2 pos = transform.position;
+            pos.x += movementSpeed;
+
+            float sin = Mathf.Sin(pos.x) * 0.1f;
+            pos.y = sin * 0.1f;
+
+            transform.Translate(movementSpeed, pos.y, 0);
+        }
+        else
+        {
+            transform.Translate(movementSpeed, 0, 0);
+        }
     }
 
     private IEnumerator DestroyBullet()
@@ -45,7 +73,7 @@ public class BulletMovement : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision != null)
+        if (collision != null && !collision.gameObject.CompareTag("Player"))
         {
             gameObject.SetActive(false);
         }

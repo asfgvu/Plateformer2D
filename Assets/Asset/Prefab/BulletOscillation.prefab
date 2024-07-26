@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 2862178241589623877}
   - component: {fileID: 3865768875393500364}
   m_Layer: 10
-  m_Name: Bullet
+  m_Name: BulletOscillation
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -50,6 +50,7 @@ MonoBehaviour:
   speed: 20
   rocketSpeed: 2
   isRocket: 0
+  isOscilation: 1
 --- !u!212 &106136359523511751
 SpriteRenderer:
   m_ObjectHideFlags: 0
