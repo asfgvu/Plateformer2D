@@ -120,7 +120,9 @@ public class PlayerMovement : MonoBehaviour
             currentWallClimbDuration = wallClimbDuration;
         }
 
-        if (Input.GetButton("Fire1"))
+        float fireAxis = Input.GetAxisRaw("Fire1");
+
+        if (fireAxis != 0)
         {
             if (canShoot)
             {
@@ -212,7 +214,7 @@ public class PlayerMovement : MonoBehaviour
                 }
             }
 
-            if (Input.GetKeyDown(KeyCode.Mouse1))
+            if (Input.GetButtonDown("Grappling"))
             {
                 Vector2 grapplePos = (Vector2)hitCollider[ColliderArrayNumber].gameObject.transform.position;
                 lineRenderer.SetPosition(0, grapplePos);
@@ -234,7 +236,7 @@ public class PlayerMovement : MonoBehaviour
                     canAddInputGrappling = true;
                 }
             }
-            else if (Input.GetKeyUp(KeyCode.Mouse1))
+            else if (Input.GetButtonUp("Grappling"))
             {
                 distanceJoint.enabled = false;
                 lineRenderer.enabled = false;
