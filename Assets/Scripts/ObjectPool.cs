@@ -18,7 +18,9 @@ public class ObjectPool : MonoBehaviour
     [SerializeField] private GameObject rocketPrefab;
     [SerializeField] private GameObject bulletOscilationPrefab;
 
-    private GameObject instantiateObject;
+    private bool isRocket;
+    private bool isBullet;
+    private bool isBulletOscilation;
 
     private void Awake()
     {
@@ -31,37 +33,85 @@ public class ObjectPool : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        instantiateObject = bulletOscilationPrefab;
+        isBullet = true;
+        ObjectToPool(1);
+    }
 
-        for (int i = 0; i < amountToPool; i++)
-        {
-            GameObject obj = Instantiate(instantiateObject, this.transform);
-            obj.SetActive(false);
-            pooledObjects.Add(obj);
-        }
+    public void ObjectToPool(int WeaponID)
+    {
+        isBullet = false;
+        isBulletOscilation = false;
+        isRocket = false;
 
-        if (instantiateObject == rocketPrefab)
+        switch (WeaponID)
         {
-            fireRate = rocketFireRate;
-        }
+            case 0:
+                if (pooledObjects.Count > 0)
+                {
+                    pooledObjects.Clear();
+                }
+                break;
 
-        if (instantiateObject == bulletPrefab || instantiateObject == bulletOscilationPrefab)
-        {
-            fireRate = bulletFireRate;
+            case 1:
+                if (pooledObjects.Count > 0)
+                {
+                    pooledObjects.Clear();
+                }
+                fireRate = bulletFireRate;
+                isBullet = true;
+                for (int i = 0; i < amountToPool; i++)
+                {
+                    GameObject obj = Instantiate(bulletPrefab, this.transform);
+                    obj.SetActive(false);
+                    pooledObjects.Add(obj);
+                };
+                break;
+
+            case 2:
+                if (pooledObjects.Count > 0)
+                {
+                    pooledObjects.Clear();
+                }
+                fireRate = bulletFireRate;
+                isBulletOscilation = true;
+                for (int i = 0; i < amountToPool; i++)
+                {
+                    GameObject obj = Instantiate(bulletOscilationPrefab, this.transform);
+                    obj.SetActive(false);
+                    pooledObjects.Add(obj);
+                };
+                break;
+
+            case 3:
+                if (pooledObjects.Count > 0)
+                {
+                    pooledObjects.Clear();
+                }
+                fireRate = rocketFireRate;
+                isRocket = true;
+                for (int i = 0; i < amountToPool; i++)
+                {
+                    GameObject obj = Instantiate(rocketPrefab, this.transform);
+                    obj.SetActive(false);
+                    pooledObjects.Add(obj);
+                };
+                break;
         }
     }
 
     public GameObject GetPooledObject()
     {
-        for (int i = 0; i < pooledObjects.Count; i++)
+        if (pooledObjects != null)
         {
-            if (!pooledObjects[i].activeInHierarchy)
+            for (int i = 0; i < pooledObjects.Count; i++)
             {
-                pooledObjects[i].gameObject.transform.rotation = new Quaternion(0, 0, 0, 0);
-                return pooledObjects[i];
+                if (!pooledObjects[i].activeInHierarchy)
+                {
+                    pooledObjects[i].gameObject.transform.rotation = new Quaternion(0, 0, 0, 0);
+                    return pooledObjects[i];
+                }
             }
         }
-
         return null;
     }
 
@@ -70,5 +120,18 @@ public class ObjectPool : MonoBehaviour
         return fireRate;
     }
 
+    public bool IsBullet()
+    {
+        return isBullet;
+    }
 
+    public bool IsBulletOsci()
+    {
+        return isBulletOscilation;
+    }
+
+    public bool IsRocket()
+    {
+        return isRocket;
+    }
 }
