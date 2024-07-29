@@ -33,12 +33,16 @@ public class ObjectPool : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        isBullet = true;
-        ObjectToPool(1);
+        ObjectToPool(0);
     }
 
     public void ObjectToPool(int WeaponID)
     {
+        foreach (GameObject obj in  pooledObjects)
+        {
+            Destroy(obj);
+        }
+        pooledObjects.Clear();
         isBullet = false;
         isBulletOscilation = false;
         isRocket = false;
@@ -46,17 +50,9 @@ public class ObjectPool : MonoBehaviour
         switch (WeaponID)
         {
             case 0:
-                if (pooledObjects.Count > 0)
-                {
-                    pooledObjects.Clear();
-                }
                 break;
 
             case 1:
-                if (pooledObjects.Count > 0)
-                {
-                    pooledObjects.Clear();
-                }
                 fireRate = bulletFireRate;
                 isBullet = true;
                 for (int i = 0; i < amountToPool; i++)
@@ -68,10 +64,6 @@ public class ObjectPool : MonoBehaviour
                 break;
 
             case 2:
-                if (pooledObjects.Count > 0)
-                {
-                    pooledObjects.Clear();
-                }
                 fireRate = bulletFireRate;
                 isBulletOscilation = true;
                 for (int i = 0; i < amountToPool; i++)
@@ -83,10 +75,6 @@ public class ObjectPool : MonoBehaviour
                 break;
 
             case 3:
-                if (pooledObjects.Count > 0)
-                {
-                    pooledObjects.Clear();
-                }
                 fireRate = rocketFireRate;
                 isRocket = true;
                 for (int i = 0; i < amountToPool; i++)
