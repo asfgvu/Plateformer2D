@@ -4,7 +4,6 @@ using UnityEngine.UI;
 
 public class WeaponWheelController : MonoBehaviour
 {
-    public static WeaponWheelController instance;
 
     public Animator anim;
     private bool WeaponWheelSelected = false;
@@ -12,15 +11,13 @@ public class WeaponWheelController : MonoBehaviour
     public Sprite NoImage;
     public static int weaponID;
 
-    private void Awake()
-    {
-        instance = this;
-    }
+    [SerializeField] private int playerNumber;
 
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetButtonDown("OpenCloseWeaponWheel"))
+
+        if (Input.GetButtonDown("OpenCloseWeaponWheel" + playerNumber))
         {
             WeaponWheelSelected = !WeaponWheelSelected;
         }
@@ -35,26 +32,53 @@ public class WeaponWheelController : MonoBehaviour
         }
     }
 
-    public void SelectWeapon()
+    public void SelectWeapon(int playerNumber)
     {
-        switch (weaponID)
+        if (playerNumber == 1)
         {
-            case 0: // nothing is selected
-                selectedItem.sprite = NoImage;
-                ObjectPool.instance.ObjectToPool(0);
-                break;
+            switch (weaponID)
+            {
+                case 0: // nothing is selected
+                    selectedItem.sprite = NoImage;
+                    ObjectPool.instance.ObjectToPool1(0);
+                    break;
 
-            case 1: // Bullet
-                ObjectPool.instance.ObjectToPool(1);
-                break;
+                case 1: // Bullet
+                    ObjectPool.instance.ObjectToPool1(1);
+                    break;
 
-            case 2: // BulletOsci
-                ObjectPool.instance.ObjectToPool(2);
-                break;
+                case 2: // BulletOsci
+                    ObjectPool.instance.ObjectToPool1(2);
+                    break;
 
-            case 3: // Rocket
-                ObjectPool.instance.ObjectToPool(3);
-                break;
+                case 3: // Rocket
+                    ObjectPool.instance.ObjectToPool1(3);
+                    break;
+            }
         }
+
+        if (playerNumber == 2)
+        {
+            switch (weaponID)
+            {
+                case 0: // nothing is selected
+                    selectedItem.sprite = NoImage;
+                    ObjectPool.instance.ObjectToPool2(0);
+                    break;
+
+                case 1: // Bullet
+                    ObjectPool.instance.ObjectToPool2(1);
+                    break;
+
+                case 2: // BulletOsci
+                    ObjectPool.instance.ObjectToPool2(2);
+                    break;
+
+                case 3: // Rocket
+                    ObjectPool.instance.ObjectToPool2(3);
+                    break;
+            }
+        }
+        
     }
 }

@@ -37,6 +37,7 @@ public class PlayerMovement : MonoBehaviour
     private float currentWallClimbDuration;
     private float vertical;
 
+    [SerializeField] private int playerNumber;
     [SerializeField] private Rigidbody2D rb;
     [SerializeField] private Transform groundCheck;
     [SerializeField] private LayerMask groundLayer;
@@ -60,12 +61,21 @@ public class PlayerMovement : MonoBehaviour
     private bool canAddInputGrappling;
     private Collider grappleFocus;
     private bool canShoot = true;
+    private float fireRate;
+    private GameObject bullet;
 
     private void Start()
     {
         currentWallClimbDuration = wallClimbDuration;
 
         distanceJoint.enabled = false;
+
+        //string[] names = Input.GetJoystickNames();
+        //Debug.Log("Connected Joysticks:");
+        //for (int i = 0; i < names.Length; i++)
+        //{
+        //    Debug.Log("Joystick" + (i + 1) + " = " + names[i]);
+        //}
     }
 
     // Update is called once per frame
@@ -76,16 +86,16 @@ public class PlayerMovement : MonoBehaviour
             return;
         }
 
-        horizontal = Input.GetAxisRaw("Horizontal");
-        vertical = Input.GetAxisRaw("Vertical");
-        dash = Input.GetButtonDown("Dash");
+        horizontal = Input.GetAxisRaw("Horizontal" + playerNumber);
+        vertical = Input.GetAxisRaw("Vertical" + playerNumber);
+        dash = Input.GetButtonDown("Dash" + playerNumber);
 
-        if (IsGrounded() && !Input.GetButton("Jump"))
+        if (IsGrounded() && !Input.GetButton("Jump" + playerNumber))
         {
             doubleJump = false;
         }
 
-        if (Input.GetButtonDown("Jump"))
+        if (Input.GetButtonDown("Jump" + playerNumber))
         {
             if (IsGrounded() || doubleJump)
             {
@@ -95,7 +105,7 @@ public class PlayerMovement : MonoBehaviour
             }
         }
 
-        if (Input.GetButtonUp("Jump") && rb.velocity.y > 0f)
+        if (Input.GetButtonUp("Jump" + playerNumber) && rb.velocity.y > 0f)
         {
             rb.velocity = new Vector2(rb.velocity.x, rb.velocity.y * 0.5f);
         }
@@ -120,7 +130,7 @@ public class PlayerMovement : MonoBehaviour
             currentWallClimbDuration = wallClimbDuration;
         }
 
-        float fireAxis = Input.GetAxisRaw("Fire1");
+        float fireAxis = Input.GetAxisRaw("Fire" + playerNumber);
 
         if (fireAxis != 0)
         {
@@ -214,7 +224,7 @@ public class PlayerMovement : MonoBehaviour
                 }
             }
 
-            if (Input.GetButtonDown("Grappling"))
+            if (Input.GetButtonDown("Grappling" + playerNumber))
             {
                 Vector2 grapplePos = (Vector2)hitCollider[ColliderArrayNumber].gameObject.transform.position;
                 lineRenderer.SetPosition(0, grapplePos);
@@ -236,7 +246,7 @@ public class PlayerMovement : MonoBehaviour
                     canAddInputGrappling = true;
                 }
             }
-            else if (Input.GetButtonUp("Grappling"))
+            else if (Input.GetButtonUp("Grappling" + playerNumber))
             {
                 distanceJoint.enabled = false;
                 lineRenderer.enabled = false;
@@ -252,7 +262,7 @@ public class PlayerMovement : MonoBehaviour
         }
         else
         {
-            grappleFocus.gameObject.GetComponent<SpriteRenderer>().color = Color.green;
+            //grappleFocus.gameObject.GetComponent<SpriteRenderer>().color = Color.green;
         }
     }
 
@@ -301,7 +311,7 @@ public class PlayerMovement : MonoBehaviour
             wallJumpingCounter -= Time.deltaTime;
         }
 
-        if (Input.GetButtonDown("Jump") && wallJumpingCounter > 0f)
+        if (Input.GetButtonDown("Jump" + playerNumber) && wallJumpingCounter > 0f)
         {
             isWallJumping = true;
             rb.velocity = new Vector2(wallJumpingDirection * wallJumpingPower.x, wallJumpingPower.y);
@@ -353,15 +363,45 @@ public class PlayerMovement : MonoBehaviour
 
     private IEnumerator Fire()
     {
-        GameObject bullet = ObjectPool.instance.GetPooledObject();
+        if (playerNumber == 1)
+        {
+            bullet = ObjectPool.instance.GetPooledObject1();
+        }
+
+        if (playerNumber == 2)
+        {
+            bullet = ObjectPool.instance.GetPooledObject2();
+        }
 
         canShoot = false;
 
         if (bullet != null)
         {
+            if (playerNumber == 1)
+            {
+                print("Bullet not null1");
+            }
+
+            if (playerNumber == 2)
+            {
+                print("Bullet not null 2");
+            }
+            
             bullet.transform.position = firePoint.position;
             bullet.GetComponent<BulletMovement>().SetDirection(Mathf.Sign(transform.localScale.x));
             bullet.SetActive(true);
+        }
+        else
+        {
+            if (playerNumber == 1)
+            {
+                print("Bullet null1");
+            }
+
+            if (playerNumber == 2)
+            {
+                print("Bullet null 2");
+            }
         }
 
         StartCoroutine(FireRateHandler());
@@ -371,7 +411,16 @@ public class PlayerMovement : MonoBehaviour
 
     private IEnumerator FireRateHandler()
     {
-        float fireRate = ObjectPool.instance.GetFireRate();
+        if (playerNumber == 1)
+        {
+            fireRate = ObjectPool.instance.GetFireRate1();
+        }
+
+        if (playerNumber == 2)
+        {
+            fireRate = ObjectPool.instance.GetFireRate2();
+        }
+        
         yield return new WaitForSeconds(fireRate);
         canShoot = true;
     }

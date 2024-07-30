@@ -8,7 +8,8 @@ public class MovingPlateform : MonoBehaviour
     [SerializeField] private int startingPoint;
     [SerializeField] private Transform[] points;
 
-    PlayerMovement playerMovement;
+    PlayerMovement playerMovement1;
+    PlayerMovement playerMovement2;
     Rigidbody2D rb;
     Vector3 moveDirection;
 
@@ -16,7 +17,8 @@ public class MovingPlateform : MonoBehaviour
 
     private void Awake()
     {
-        playerMovement = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerMovement>();
+        playerMovement1 = GameObject.FindGameObjectWithTag("Player1").GetComponent<PlayerMovement>();
+        playerMovement2 = GameObject.FindGameObjectWithTag("Player2").GetComponent<PlayerMovement>();
         rb = GetComponent<Rigidbody2D>();
     }
 
@@ -54,18 +56,29 @@ public class MovingPlateform : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.CompareTag("Player"))
+        if (collision.CompareTag("Player1"))
         {
-            playerMovement.isOnPlateform = true;
-            playerMovement.plateformRb = rb;
+            playerMovement1.isOnPlateform = true;
+            playerMovement1.plateformRb = rb;
+        }
+
+        if (collision.CompareTag("Player2"))
+        {
+            playerMovement2.isOnPlateform = true;
+            playerMovement2.plateformRb = rb;
         }
     }
 
     private void OnTriggerExit2D(Collider2D collision)
     {
-        if (collision.CompareTag("Player"))
+        if (collision.CompareTag("Player1"))
         {
-            playerMovement.isOnPlateform = false;
+            playerMovement1.isOnPlateform = false;
+        }
+
+        if (collision.CompareTag("Player2"))
+        {
+            playerMovement2.isOnPlateform = false;
         }
     }
 }

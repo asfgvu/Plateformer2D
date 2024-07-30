@@ -11,8 +11,8 @@ public class WeaponWheelButtonController : MonoBehaviour
     public Image selectedItem;
     private bool selected = false;
     public Sprite icon;
-    WeaponWheelController weaponWheelController;
-
+    public WeaponWheelController weaponWheelController;
+    public int playerNumber;
 
     // Start is called before the first frame update
     void Start()
@@ -35,7 +35,7 @@ public class WeaponWheelButtonController : MonoBehaviour
     {
         selected = true;
         WeaponWheelController.weaponID = Id;
-        WeaponWheelController.instance.SelectWeapon();
+        weaponWheelController.SelectWeapon(playerNumber);
     }
 
     public void Deselected()

@@ -26,7 +26,7 @@ public class BulletMovement : MonoBehaviour
         float movementSpeed;
 
         StartCoroutine(DestroyBullet());
-        if (ObjectPool.instance.IsRocket())
+        if (ObjectPool.instance.IsRocket() || ObjectPool.instance.IsRocket2())
         {
             movementSpeed = rocketSpeed * Time.deltaTime * direction;
         }
@@ -35,7 +35,7 @@ public class BulletMovement : MonoBehaviour
             movementSpeed = speed * Time.deltaTime * direction;
         }
         
-        if (ObjectPool.instance.IsBulletOsci())
+        if (ObjectPool.instance.IsBulletOsci() || ObjectPool.instance.IsBulletOsci2())
         {
             Vector2 pos = transform.position;
             pos.x += movementSpeed;
