@@ -18,7 +18,7 @@ public class MovingPlateform : MonoBehaviour
     private void Awake()
     {
         playerMovement1 = GameObject.FindGameObjectWithTag("Player1").GetComponent<PlayerMovement>();
-        playerMovement2 = GameObject.FindGameObjectWithTag("Player2").GetComponent<PlayerMovement>();
+        //playerMovement2 = GameObject.FindGameObjectWithTag("Player2").GetComponent<PlayerMovement>();
         rb = GetComponent<Rigidbody2D>();
     }
 
