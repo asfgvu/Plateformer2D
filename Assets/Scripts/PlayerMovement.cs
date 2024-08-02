@@ -140,6 +140,12 @@ public class PlayerMovement : MonoBehaviour
             }
             
         }
+
+        if (Input.GetButtonDown("Respawn"))
+        {
+            print("Respawn");
+            transform.position = Respawn().transform.position;
+        }
     }
 
     private void FixedUpdate()
@@ -423,5 +429,10 @@ public class PlayerMovement : MonoBehaviour
         
         yield return new WaitForSeconds(fireRate);
         canShoot = true;
+    }
+
+    public GameObject Respawn()
+    {
+        return CheckpointManager.instance.GetLastCheckpoint();
     }
 }
