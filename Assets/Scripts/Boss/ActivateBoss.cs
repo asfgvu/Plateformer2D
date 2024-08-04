@@ -10,7 +10,16 @@ public class ActivateBoss : MonoBehaviour
     public GameObject wallBoss1;
     public GameObject wallBoss2;
 
-    public bool isActivated;
+    public GameObject Boss;
+
+    public Transform bossSpawnPoint;
+
+    private bool isActivated;
+    [SerializeField] private float speed;
+    [SerializeField] private float distance;
+    [SerializeField] private float cameraShakeDuration;
+
+    public CameraShake CameraShake;
 
     // Start is called before the first frame update
     void Start()
@@ -21,7 +30,19 @@ public class ActivateBoss : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if (isActivated)
+        {
+            if (wallBoss1.transform.position.y >= distance && wallBoss2.transform.position.y >= distance)
+            {
+                wallBoss1.transform.position -= Vector3.up * Time.deltaTime * speed;
+                wallBoss2.transform.position -= Vector3.up * Time.deltaTime * speed;
+                StartCoroutine(CameraShake.Shake(cameraShakeDuration, .05f));
+            }
+            else
+            {
+                Boss.SetActive(true);
+            }
+        }
     }
 
     private void OnTriggerEnter2D(Collider2D collision)

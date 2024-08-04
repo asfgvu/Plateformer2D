@@ -435,4 +435,9 @@ public class PlayerMovement : MonoBehaviour
     {
         return CheckpointManager.instance.GetLastCheckpoint();
     }
+
+    public void Death()
+    {
+        transform.position = Respawn().transform.position;
+    }
 }

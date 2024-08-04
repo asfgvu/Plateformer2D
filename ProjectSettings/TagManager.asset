@@ -7,6 +7,8 @@ TagManager:
   - Wall
   - Player1
   - Player2
+  - BossWall
+  - Bullet
   layers:
   - Default
   - TransparentFX

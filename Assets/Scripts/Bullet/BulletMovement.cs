@@ -8,10 +8,14 @@ public class BulletMovement : MonoBehaviour
 {
     [SerializeField] private float speed = 5;
     [SerializeField] private float rocketSpeed = 2f;
+    [SerializeField] private float bulletDamage = 10;
+    [SerializeField] private float rocketDamage = 50;
     private float direction;
 
     [SerializeField] private bool isRocket;
     [SerializeField] private bool isOscilation;
+
+    private float damage;
 
     // Start is called before the first frame update
     void Start()
@@ -29,10 +33,12 @@ public class BulletMovement : MonoBehaviour
         if (ObjectPool.instance.IsRocket() || ObjectPool.instance.IsRocket2())
         {
             movementSpeed = rocketSpeed * Time.deltaTime * direction;
+            damage = rocketDamage;
         }
         else
         {
             movementSpeed = speed * Time.deltaTime * direction;
+            damage = bulletDamage;
         }
         
         if (ObjectPool.instance.IsBulletOsci() || ObjectPool.instance.IsBulletOsci2())
@@ -44,10 +50,13 @@ public class BulletMovement : MonoBehaviour
             pos.y = sin * 0.1f;
 
             transform.Translate(movementSpeed, pos.y, 0);
+
+            damage = bulletDamage;
         }
         else
         {
             transform.Translate(movementSpeed, 0, 0);
+            damage = bulletDamage;
         }
     }
 
@@ -77,5 +86,15 @@ public class BulletMovement : MonoBehaviour
         {
             gameObject.SetActive(false);
         }
+
+        if (collision.gameObject.CompareTag("Bullet"))
+        {
+            gameObject.SetActive(false);
+        }
+    }
+
+    public float GetDamage()
+    {
+        return damage;
     }
 }
