@@ -7,7 +7,7 @@ using UnityEngine;
 public class PlayerMovement : MonoBehaviour
 {
     private float horizontal;
-    private float speed = 8f;
+    [SerializeField] private float speed = 10f;
     private float grapplingSpeed = .1f;
     private float jumpingPower = 16f;
     private bool isFacingRight = true;
@@ -36,6 +36,7 @@ public class PlayerMovement : MonoBehaviour
     private float wallClimbDuration = 1f;
     private float currentWallClimbDuration;
     private float vertical;
+    private bool canWallJump = true;
 
     [SerializeField] private int playerNumber;
     [SerializeField] private Rigidbody2D rb;
@@ -128,6 +129,7 @@ public class PlayerMovement : MonoBehaviour
         if (IsGrounded())
         {
             currentWallClimbDuration = wallClimbDuration;
+            canWallJump = true;
         }
 
         float fireAxis = Input.GetAxisRaw("Fire" + playerNumber);
@@ -304,9 +306,10 @@ public class PlayerMovement : MonoBehaviour
 
     private void WallJump()
     {
-        if (isWallSliding)
+        if (isWallSliding && canWallJump)
         {
             isWallJumping = false;
+            canWallJump = false;
             wallJumpingDirection = -transform.localScale.x;
             wallJumpingCounter = wallJumpingTime;
 
