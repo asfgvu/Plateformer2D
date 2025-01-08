@@ -33,7 +33,7 @@ public class PlayerMovement : MonoBehaviour
     private Vector2 wallJumpingPower = new Vector2(8f, 16f);
 
     private float wallClimbingSpeed = 8f;
-    private float wallClimbDuration = 1f;
+    [SerializeField] private float wallClimbDuration = 1f;
     private float currentWallClimbDuration;
     private float vertical;
     private bool canWallJump = true;
@@ -442,5 +442,20 @@ public class PlayerMovement : MonoBehaviour
     public void Death()
     {
         transform.position = Respawn().transform.position;
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.tag == "Trap")
+        {
+            Death();
+        }
+
+        if (collision.tag == "ResetDash")
+        {
+            canDash = true;
+            collision.gameObject.SetActive(false);
+            Destroy(collision.gameObject);
+        }
     }
 }

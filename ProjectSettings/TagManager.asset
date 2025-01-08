@@ -9,6 +9,8 @@ TagManager:
   - Player2
   - BossWall
   - Bullet
+  - Trap
+  - ResetDash
   layers:
   - Default
   - TransparentFX
