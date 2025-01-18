@@ -65,6 +65,8 @@ public class PlayerMovement : MonoBehaviour
     private float fireRate;
     private GameObject bullet;
 
+    private List<GameObject> CrystalList = new List<GameObject>();
+
     private void Start()
     {
         currentWallClimbDuration = wallClimbDuration;
@@ -448,6 +450,11 @@ public class PlayerMovement : MonoBehaviour
     {
         if (collision.tag == "Trap")
         {
+            for (int i = 0; i < CrystalList.Count; i++)
+            {
+                CrystalList[i].gameObject.SetActive(true);
+            }
+            CrystalList.Clear();
             Death();
         }
 
@@ -455,7 +462,7 @@ public class PlayerMovement : MonoBehaviour
         {
             canDash = true;
             collision.gameObject.SetActive(false);
-            Destroy(collision.gameObject);
+            CrystalList.Add(collision.gameObject);
         }
     }
 }
