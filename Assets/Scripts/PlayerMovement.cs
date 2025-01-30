@@ -13,6 +13,7 @@ public class PlayerMovement : MonoBehaviour
     private bool isFacingRight = true;
 
     private bool doubleJump;
+    private bool canDoubleJump;
 
     private bool canDash = true;
     private bool isDashing;
@@ -100,11 +101,17 @@ public class PlayerMovement : MonoBehaviour
 
         if (Input.GetButtonDown("Jump" + playerNumber))
         {
-            if (IsGrounded() || doubleJump)
+            if (IsGrounded())
             {
                 rb.velocity = new Vector2(rb.velocity.x, jumpingPower);
 
                 doubleJump = !doubleJump;
+                canDoubleJump = !canDoubleJump;
+            } 
+            else if (rb.velocity.y < .5f && canDoubleJump)
+            {
+                rb.velocity = new Vector2(rb.velocity.x, jumpingPower);
+                canDoubleJump = !canDoubleJump;
             }
         }
 
@@ -132,6 +139,7 @@ public class PlayerMovement : MonoBehaviour
         {
             currentWallClimbDuration = wallClimbDuration;
             canWallJump = true;
+            canDoubleJump = true;
         }
 
         float fireAxis = Input.GetAxisRaw("Fire" + playerNumber);
