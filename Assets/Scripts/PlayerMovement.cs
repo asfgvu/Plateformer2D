@@ -108,7 +108,7 @@ public class PlayerMovement : MonoBehaviour
                 doubleJump = !doubleJump;
                 canDoubleJump = !canDoubleJump;
             } 
-            else if (rb.velocity.y < .5f && canDoubleJump)
+            else if (canDoubleJump)
             {
                 rb.velocity = new Vector2(rb.velocity.x, jumpingPower);
                 canDoubleJump = !canDoubleJump;
