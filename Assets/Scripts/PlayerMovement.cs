@@ -9,7 +9,7 @@ public class PlayerMovement : MonoBehaviour
     private float horizontal;
     [SerializeField] private float speed = 10f;
     private float grapplingSpeed = .1f;
-    private float jumpingPower = 16f;
+    private float jumpingPower = 16.25f;
     private bool isFacingRight = true;
 
     private bool doubleJump;
@@ -31,7 +31,7 @@ public class PlayerMovement : MonoBehaviour
     private float wallJumpingTime = 0.2f;
     private float wallJumpingCounter;
     private float wallJumpingDuration = 0.4f;
-    private Vector2 wallJumpingPower = new Vector2(8f, 16f);
+    private Vector2 wallJumpingPower = new Vector2(8f, 16.25f);
 
     private float wallClimbingSpeed = 8f;
     [SerializeField] private float wallClimbDuration = 1f;
